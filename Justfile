@@ -51,6 +51,14 @@ build-bundles *args: build-parsers
     npm run esbuild.modular -- {{args}}
     npm run esbuild.monolith -- {{args}}
 
+# docs dependencies as in .deployment/Dockerfile; kept out of .venv, because testapp enables sphinx_view when importable
+_docs_with := "--with 'Sphinx<9' --with sphinx-toolbox --with furo --with https://github.com/jrief/django-sphinx-view/archive/refs/heads/main.zip"
+
+# sphinx docs as JSON for the demo site (docs/build/json, served by testapp at /)
+docs *args:
+    npm run docscss
+    @just uvrun "{{_docs_with}} sphinx-build -M json docs/source docs/build {{args}}"
+
 # python package (sdist + wheel) -> dist/, same steps as publish.yml (minified bundles, compiled translations)
 build: build-js compilemessages
     rm -rf dist build
