@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - releases/*
+      - develop/*
     paths-ignore:
       - '**.md'
       - '**.rst'

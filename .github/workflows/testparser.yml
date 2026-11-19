@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - releases/*
+      - develop/*
     paths:
       - '/assets/*.pegjs'
       - '/client/tests/*.ts'
