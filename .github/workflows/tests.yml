@@ -13,7 +13,6 @@ on:
       - '.github/workflows/*'
   pull_request:
     branches:
-      - develop
       - releases/*
     paths-ignore:
       - '**.md'

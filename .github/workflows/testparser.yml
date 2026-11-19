@@ -10,7 +10,6 @@ on:
       - '/client/tests/*.ts'
   pull_request:
     branches:
-      - develop
       - releases/*
     paths:
       - '/assets/*.pegjs'
