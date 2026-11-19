@@ -48,7 +48,7 @@ class SingleForm(Form):
     )
 
     county=models.ModelChoiceField(
-        queryset=County.objects.all(),
+        queryset=County.objects.select_related('state'),
         widget=Selectize(
             search_lookup='name__icontains',
             filter_by={'state': 'state__id'},
@@ -63,7 +63,7 @@ class MultiForm(Form):
     )
 
     counties=models.ModelMultipleChoiceField(
-        queryset=County.objects.all(),
+        queryset=County.objects.select_related('state'),
         widget=SelectizeMultiple(
             search_lookup='name__icontains',
             filter_by={'states': 'state__id'},
@@ -78,7 +78,7 @@ class ManyForm(Form):
     )
 
     counties=models.ModelMultipleChoiceField(
-        queryset=County.objects.all(),
+        queryset=County.objects.select_related('state'),
         widget=DualSelector(
             search_lookup='name__icontains',
             filter_by={'states': 'state__id'},

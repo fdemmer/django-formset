@@ -64,7 +64,7 @@ class StatesForm(forms.Form):
 
     counties = models.ModelMultipleChoiceField(
         label="Counties",
-        queryset=County.objects.all(),
+        queryset=County.objects.select_related('state'),
         # widget=SelectizeMultiple(
         #     search_lookup=['name__icontains'],
         #     filter_by={'states': 'state__id'},
@@ -105,7 +105,7 @@ class StateFilteredForm(forms.Form):
     )
     county = models.ModelChoiceField(
         label="County",
-        queryset=County.objects.all(),
+        queryset=County.objects.select_related('state'),
         widget=Selectize(
             search_lookup=['name__icontains'],
             use_filter_set=StateFilterSet,
