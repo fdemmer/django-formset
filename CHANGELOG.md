@@ -4,6 +4,7 @@
   * Fix #277: Always perform a remote lookup if field is marked as incomplete.
   * Fix: In the admin view, collapsible ``Fieldset``-s do not work.
   * Fix #263: Error alert now shows the response text.
+  * Add support for Python 3.14.
 
 - 2.2.4
   * Fix #266: Timing issue in widgets `DateField` and `DateTimeField`. Input focus switched before
