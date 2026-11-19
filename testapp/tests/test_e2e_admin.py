@@ -46,7 +46,7 @@ def test_admin_edit_person(live_server, page, viewname, nth_save, subtests):
         return
 
     with subtests.test("edit the person again"):
-        page.wait_for_load_state('domcontentloaded')
+        page.locator('django-formset:defined').wait_for()
         page.locator('#id_full_name').fill("Jane Doe")
         page.locator('#id_activity_days').fill("321")
         page.locator('#id_gender_0').check()
@@ -89,7 +89,7 @@ def test_admin_edit_company(live_server, page, viewname, nth_save, subtests):
         return
 
     with subtests.test("edit the company again"):
-        page.wait_for_load_state('domcontentloaded')
+        page.locator('django-formset:defined').wait_for()
         page.locator('#id_departments\\.0\\.teams\\.1\\.team\\.name').fill("Web Services")
         page.locator('#id_departments\\.1\\.department\\.name').fill("Finance")
         page.locator('#id_departments\\.1\\.teams\\.0\\.team\\.name').fill("Controlling")
