@@ -57,6 +57,7 @@ _docs_with := "--with 'Sphinx<9' --with sphinx-toolbox --with furo --with https:
 # sphinx docs as JSON for the demo site (docs/build/json, served by testapp at /)
 docs *args:
     npm run docscss
+    rm -f docs/build/json/environment.pickle
     @just uvrun "{{_docs_with}} sphinx-build -M json docs/source docs/build {{args}}"
 
 # python package (sdist + wheel) -> dist/, same steps as publish.yml (minified bundles, compiled translations)
