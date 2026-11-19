@@ -58,7 +58,7 @@ class IncompleteSelectResponseMixin:
                 'options': options,
             })
 
-        queryset = widget.choices.queryset
+        queryset = widget.select_related_group(widget.choices.queryset)
         data = {'total_count': queryset.count()}
 
         if widget.filter_by and any(k.startswith('filter-') for k in request.GET.keys()):

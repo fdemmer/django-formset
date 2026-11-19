@@ -2,7 +2,7 @@ from functools import reduce
 from inspect import isclass
 from operator import and_, or_
 
-from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
+from django.core.exceptions import FieldDoesNotExist, ImproperlyConfigured, ObjectDoesNotExist
 from django.db.models.query_utils import Q
 from django.forms.models import ModelChoiceIterator, ModelChoiceIteratorValue
 from django.forms.widgets import Select, SelectMultiple, Widget
@@ -96,6 +96,21 @@ class IncompleteSelectMixin:
         except TypeError:
             raise ImproperlyConfigured(f"Invalid attribute 'search_lookup' in {self.__class__}.")
 
+    def select_related_group(self, queryset):
+        """
+        If options are grouped by a forward relation (ForeignKey/OneToOneField), fetch the related
+        object in the same query, instead of one query per option.
+        """
+        if self.group_field_name:
+            try:
+                field = queryset.model._meta.get_field(self.group_field_name)
+            except FieldDoesNotExist:
+                pass
+            else:
+                if field.is_relation and (field.many_to_one or field.one_to_one) and field.concrete:
+                    return queryset.select_related(self.group_field_name)
+        return queryset
+
     def format_value(self, value):
         if value is None:
             return []
@@ -118,7 +133,9 @@ class IncompleteSelectMixin:
         if isinstance(self.choices, ModelChoiceIterator):
             if self.group_field_name:
                 self.optgroups = self._optgroups_model_choice
-                self.choices.queryset = self.choices.queryset.order_by(self.group_field_name)
+                self.choices.queryset = self.select_related_group(
+                    self.choices.queryset.order_by(self.group_field_name)
+                )
                 self.choices.group_field_name = self.group_field_name
                 self.choices.__class__ = GroupedModelChoiceIterator
             else:
