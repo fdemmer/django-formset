@@ -3,6 +3,7 @@ from time import sleep
 from playwright.sync_api import expect
 
 from django.core.management import call_command
+from django.db import transaction
 from django.forms import Form, fields, models
 from django.urls import path
 from django.views.generic import UpdateView, FormView as GenericFormView
@@ -33,8 +34,8 @@ class ModelFormView(ContextMixin, IncompleteSelectResponseMixin, FormViewMixin, 
 
 
 @pytest.fixture(scope='function')
-def django_db_setup(django_db_blocker, settings):
-    with django_db_blocker.unblock():
+def django_db_setup(django_db_setup, django_db_blocker, settings):
+    with django_db_blocker.unblock(), transaction.atomic():
         call_command('loaddata', settings.BASE_DIR / 'testapp/fixtures/counties.json', verbosity=0)
         for county in CountyUnnormalized.objects.all():
             state, _ = State.objects.get_or_create(code=county.state_code, name=county.state_name)

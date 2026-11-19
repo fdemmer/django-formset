@@ -6,6 +6,7 @@ from urllib.parse import parse_qs, urlparse
 
 from playwright.sync_api import expect
 
+from django.db import transaction
 from django.forms import Form, models
 from django.urls import path
 from django.views.generic import UpdateView, FormView as GenericFormView
@@ -49,8 +50,8 @@ class ModelFormView(ContextMixin, IncompleteSelectResponseMixin, FormViewMixin, 
 
 
 @pytest.fixture(scope='function')
-def django_db_setup(django_db_blocker):
-    with django_db_blocker.unblock():
+def django_db_setup(django_db_setup, django_db_blocker):
+    with django_db_blocker.unblock(), transaction.atomic():
         for counter in range(1, 1000):
             label = f"Opinion {counter:04}"
             OpinionModel.objects.update_or_create(tenant=1, label=label)

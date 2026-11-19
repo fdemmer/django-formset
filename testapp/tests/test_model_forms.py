@@ -2,6 +2,7 @@ import json
 import pytest
 from bs4 import BeautifulSoup
 
+from django.db import transaction
 from django.forms import fields, ModelForm, widgets
 from django.utils.timezone import datetime
 from django.views.generic.edit import CreateView, UpdateView
@@ -34,8 +35,8 @@ class PersonForm(ModelForm):
 
 
 @pytest.fixture(scope='module')
-def django_db_setup(django_db_blocker):
-    with django_db_blocker.unblock():
+def django_db_setup(django_db_setup, django_db_blocker):
+    with django_db_blocker.unblock(), transaction.atomic():
         OpinionModel.objects.all().delete()
         for counter in range(1, 3000):
             label = f"Opinion {counter:04}"
