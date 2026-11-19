@@ -24,9 +24,9 @@ setup django="Django>=5.1,<6.1" python="3.13":
 setup-js:
     npm install --include=dev
 
-# pytest (default: whole testapp); e.g. `just test "testapp/tests/test_e2e_slugfield.py -x" 1`
+# pytest (default: whole testapp in parallel via xdist); e.g. `just test "testapp/tests/test_e2e_slugfield.py -x" 1`
 test args="" $PYTEST_USE_MONOLITHIC_BUILD="0": build-js
-    @just uvrun "python -m pytest {{ if args == '' { 'testapp' } else { args } }}"
+    @just uvrun "python -m pytest {{ if args == '' { 'testapp -n auto' } else { args } }}"
 
 # jest unit tests for the PEG parsers
 test-js args="": build-parsers
