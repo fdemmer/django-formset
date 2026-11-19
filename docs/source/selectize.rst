@@ -338,7 +338,7 @@ field able to accept hundreds of items, consider using the :ref:`dual-selector` 
 Options with Sublabels
 ======================
 
-.. version-added:: 2.1
+.. versionadded:: 2.1
 
 Sometimes one label is not enough to describe an option. For instance, when selecting a county, it
 might be useful to show the state's name below the county name. The ``Selectize`` widget allows us
