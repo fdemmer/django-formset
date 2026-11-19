@@ -1,8 +1,9 @@
 import pytest
+from importlib import import_module
 from time import sleep
 from playwright.sync_api import expect
 
-from django.core.management import call_command
+from django.apps import apps as django_apps
 from django.db import transaction
 from django.forms import Form, fields, models
 from django.urls import path
@@ -12,9 +13,11 @@ from formset.views import IncompleteSelectResponseMixin, FormViewMixin
 from formset.widgets import DualSelector, Selectize, SelectizeMultiple, DualSortableSelector
 
 from testapp.forms.county import CountyForm
-from testapp.models import County, CountyUnnormalized, State
+from testapp.models import County, State
 
 from .utils import ContextMixin, get_javascript_catalog
+
+initialize_counties = import_module('testapp.migrations.0001_initial').initialize_counties
 
 
 class NativeFormView(ContextMixin, IncompleteSelectResponseMixin, FormViewMixin, GenericFormView):
@@ -34,12 +37,13 @@ class ModelFormView(ContextMixin, IncompleteSelectResponseMixin, FormViewMixin, 
 
 
 @pytest.fixture(scope='function')
-def django_db_setup(django_db_setup, django_db_blocker, settings):
+def django_db_setup(django_db_setup, django_db_blocker):
+    # Counties/states are created by migration 0001_initial. live_server implies transactional_db, which
+    # flushes all tables after each test, so re-seed with the migration's own code unless the data is
+    # still present (e.g. in a fresh test database), which would otherwise duplicate every county.
     with django_db_blocker.unblock(), transaction.atomic():
-        call_command('loaddata', settings.BASE_DIR / 'testapp/fixtures/counties.json', verbosity=0)
-        for county in CountyUnnormalized.objects.all():
-            state, _ = State.objects.get_or_create(code=county.state_code, name=county.state_name)
-            County.objects.create(state=state, name=county.county_name)
+        if not County.objects.exists():
+            initialize_counties(django_apps, None)
 
 
 def initial_static_choices():
