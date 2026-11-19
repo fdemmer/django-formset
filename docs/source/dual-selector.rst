@@ -82,7 +82,7 @@ as widget to the field's arguments
 
 	class CountyForm(forms.Form):
 	    county = models.ModelMultipleChoiceField(
-	        queryset=County.objects.all(),
+	        queryset=County.objects.select_related('state'),
 	        widget=DualSelector(search_lookup='name__icontains'),
 	    )
 
@@ -204,7 +204,7 @@ adjacent fields for preselecting options:
 	    )
 	    county = models.ModelMultipleChoiceField(
 	        label="County",
-	        queryset=County.objects.all(),
+	        queryset=County.objects.select_related('state'),
 	        widget=DualSelector(
 	            search_lookup=['name__icontains'],
 	            filter_by={'state': 'state_id'},

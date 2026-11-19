@@ -109,6 +109,11 @@ Here we instantiate the widget :class:`formset.widgets.Selectize` using the foll
 * ``attrs``: A Python dictionary of extra attributes to be added to the rendered ``<select>``
   element.
 
+If the label of an option accesses a related object, for instance ``County.__str__`` uses
+``self.state.code``, pass a queryset using ``select_related(...)``, otherwise each rendered or looked
+up option costs an extra database query. When grouping by a foreign key using ``group_field_name``,
+this is done automatically.
+
 .. _lookup expression: https://docs.djangoproject.com/en/stable/ref/models/lookups/#lookup-reference
 
 .. django-view:: county_view
