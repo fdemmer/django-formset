@@ -137,7 +137,6 @@ class DateTimeField extends Widget {
 				day: '2-digit',
 				hour: '2-digit',
 				minute: '2-digit',
-				calendar: 'iso8601',
 			});
 			this.hour12 = this.dateTimeFormat.resolvedOptions().hour12 ?? false;
 			this.dateTimeFormat.formatToParts().forEach(part => {
