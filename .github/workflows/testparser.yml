@@ -6,14 +6,18 @@ on:
       - releases/*
       - develop/*
     paths:
-      - '/assets/*.pegjs'
-      - '/client/tests/*.ts'
+      - 'assets/*.pegjs'
+      - 'assets/pegjsconf.json'
+      - 'client/tests/*.ts'
+      - '.github/workflows/testparser.yml'
   pull_request:
     branches:
       - releases/*
     paths:
-      - '/assets/*.pegjs'
-      - '/client/tests/*.ts'
+      - 'assets/*.pegjs'
+      - 'assets/pegjsconf.json'
+      - 'client/tests/*.ts'
+      - '.github/workflows/testparser.yml'
 
 jobs:
   build:
@@ -28,6 +32,8 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Install dependencies
+      run: npm install --include=dev
     - name: Build Parsers
       run: |
         npm run tag-attributes
